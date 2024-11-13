@@ -1,0 +1,102 @@
+#include <iostream>
+    #include <fstream>
+    #include <string>
+    #include <filesystem>
+    
+    namespace fs = std::filesystem;
+    
+    void createFile(const std::string& filename) {
+        std::ofstream file(filename);
+        if (file) {
+            std::cout << "File '" << filename << "' created successfully.\n";
+        } else {
+            std::cerr << "Error creating file '" << filename << "'.\n";
+        }
+    }
+    
+    void writeFile(const std::string& filename) {
+        std::ofstream file(filename, std::ios::app); // Open in append mode
+        if (!file) {
+            std::cerr << "Error opening file '" << filename << "' for writing.\n";
+            return;
+        }
+        
+        std::string content;
+        std::cout << "Enter content to write (end with a newline):\n";
+        std::cin.ignore(); // To clear the input buffer
+        std::getline(std::cin, content);
+        
+        file << content << "\n";
+        std::cout << "Content written to '" << filename << "'.\n";
+    }
+    
+    void readFile(const std::string& filename) {
+        std::ifstream file(filename);
+        if (!file) {
+            std::cerr << "Error opening file '" << filename << "' for reading.\n";
+            return;
+        }
+        
+        std::string line;
+        std::cout << "Contents of '" << filename << "':\n";
+        while (std::getline(file, line)) {
+            std::cout << line << '\n';
+        }
+    }
+    
+    void deleteFile(const std::string& filename) {
+        if (fs::remove(filename)) {
+            std::cout << "File '" << filename << "' deleted successfully.\n";
+        } else {
+            std::cerr << "Error deleting file '" << filename << "' (file may not exist).\n";
+        }
+    }
+    
+    int main() {
+        int choice;
+        std::string filename;
+        
+        while (true) {
+            std::cout << "\n--- Basic File Manager ---\n";
+            std::cout << "1. Create a File\n";
+            std::cout << "2. Write to a File\n";
+            std::cout << "3. Read from a File\n";
+            std::cout << "4. Delete a File\n";
+            std::cout << "5. Exit\n";
+            std::cout << "Enter your choice: ";
+            std::cin >> choice;
+            
+            switch (choice) {
+                case 1:
+                    std::cout << "Enter the filename to create: ";
+                    std::cin >> filename;
+                    createFile(filename);
+                    break;
+                    
+                case 2:
+                    std::cout << "Enter the filename to write to: ";
+                    std::cin >> filename;
+                    writeFile(filename);
+                    break;
+                    
+                case 3:
+                    std::cout << "Enter the filename to read from: ";
+                    std::cin >> filename;
+                    readFile(filename);
+                    break;
+                    
+                case 4:
+                    std::cout << "Enter the filename to delete: ";
+                    std::cin >> filename;
+                    deleteFile(filename);
+                    break;
+                    
+                case 5:
+                    std::cout << "Exiting...\n";
+                    return 0;
+                    
+                default:
+                    std::cerr << "Invalid choice. Please try again.\n";
+            }
+        }
+    }
